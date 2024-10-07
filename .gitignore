@@ -1,0 +1,14 @@
+*.env
+
+adguard/conf/
+adguard/work/
+
+crowdsec/config/
+crowdsec/db/
+!crowdsec/config/acquis.yaml
+
+wireguard/config/
+
+traefik/acme.json
+traefik/config/
+traefik/logs/

@@ -1,0 +1,52 @@
+---
+services:
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    env_file:
+      - .env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PERSISTENTKEEPALIVE_PEERS=15
+      - LOG_CONFS=true
+    volumes:
+      - ./wireguard/config:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - ${WIREGUARD_PORT:-51820}:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE && /init"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      proxy:
+        ipv4_address: ${WIREGUARD_CONTAINER_IP:-10.0.0.2}
+
+  adguard:
+    container_name: adguard
+    image: adguard/adguardhome
+    restart: unless-stopped
+    hostname: adguard
+    volumes:
+      - "./adguard/work:/opt/adguardhome/work"
+      - "./adguard/conf:/opt/adguardhome/conf"
+    networks:
+      proxy:
+        ipv4_address: ${ADGUARD_CONTAINER_IP:-10.0.0.100}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  proxy:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${NETWORK_SUBNET:-10.0.0.0/24}

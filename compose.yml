@@ -44,6 +44,25 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  dumbproxy:
+    container_name: dumbproxy
+    image: ghcr.io/senseunit/dumbproxy:latest-alpine
+    ports:
+      - "${DUMBPROXY_PORT:-443}:443"
+    command:
+      - "-bind-address=:443"
+      - "-auth=basicfile://?path=/etc/dumbproxy.htpasswd"
+      - "-autocert"
+    volumes:
+      - ./dumbproxy/.htpasswd:/etc/dumbproxy.htpasswd:rw
+      - ./dumbproxy/config:/.dumbproxy
+    networks:
+      proxy:
+        ipv4_address: ${DUMBPROXY_CONTAINER_IP:-10.0.0.3}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
 networks:
   proxy:
     ipam:

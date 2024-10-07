@@ -12,3 +12,5 @@ wireguard/config/
 traefik/acme.json
 traefik/config/
 traefik/logs/
+
+dumbproxy/

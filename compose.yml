@@ -48,11 +48,10 @@ services:
     container_name: dumbproxy
     image: ghcr.io/senseunit/dumbproxy:latest-alpine
     ports:
-      - "${DUMBPROXY_PORT:-443}:443"
+      - "${DUMBPROXY_PORT:-8080}:8080"
     command:
-      - "-bind-address=:443"
+      - "-bind-address=:8080"
       - "-auth=basicfile://?path=/etc/dumbproxy.htpasswd"
-      - "-autocert"
     volumes:
       - ./dumbproxy/dumbproxy.htpasswd:/etc/dumbproxy.htpasswd:rw
       - ./dumbproxy/config:/.dumbproxy

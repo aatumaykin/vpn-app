@@ -54,7 +54,7 @@ services:
       - "-auth=basicfile://?path=/etc/dumbproxy.htpasswd"
       - "-autocert"
     volumes:
-      - ./dumbproxy/.htpasswd:/etc/dumbproxy.htpasswd:rw
+      - ./dumbproxy/dumbproxy.htpasswd:/etc/dumbproxy.htpasswd:rw
       - ./dumbproxy/config:/.dumbproxy
     networks:
       proxy:
